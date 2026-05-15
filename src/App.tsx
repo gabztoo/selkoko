@@ -1,27 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Check, Shield, Lock, QrCode, ArrowRight, Timer } from 'lucide-react';
+import { Check, Shield, Lock, ArrowRight, Timer } from 'lucide-react';
 import { io } from 'socket.io-client';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 export default function App() {
   const gatewayCheckoutUrl = import.meta.env.VITE_GATEWAY_CHECKOUT_URL as string | undefined;
   const [activeUsers, setActiveUsers] = useState<number>(12);
   const [step, setStep] = useState<'checkout' | 'processing' | 'success' | 'pending' | 'failed' | 'checkout_error'>('checkout');
-  const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [formData, setFormData] = useState({ contact: '' });
   const [telegramLink, setTelegramLink] = useState('');
   const [checkoutId, setCheckoutId] = useState('');
   const [checkoutErrorMessage, setCheckoutErrorMessage] = useState('');
   const [timeLeft, setTimeLeft] = useState(2 * 3600 + 45 * 60 + 12); // Initial time 02:45:12
   const [discountTimeLeft, setDiscountTimeLeft] = useState(10 * 60);
-  const [showMobileStickyCta, setShowMobileStickyCta] = useState(true);
-  const contactInputRef = useRef<HTMLInputElement>(null);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -103,23 +94,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, [step, checkoutId]);
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || !submitButtonRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowMobileStickyCta(!entry.isIntersecting);
-      },
-      { threshold: 0.35 }
-    );
-    observer.observe(submitButtonRef.current);
-    return () => observer.disconnect();
-  }, [step]);
-
-  const handleStickyCtaClick = () => {
-    contactInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(() => contactInputRef.current?.focus(), 250);
-  };
-
   const redirectToGatewayFallback = () => {
     if (!gatewayCheckoutUrl) return false;
 
@@ -134,11 +108,14 @@ export default function App() {
 
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!ageConfirmed) return;
 
     window.localStorage.removeItem('lastCheckoutId');
     setCheckoutErrorMessage('');
     setStep('processing');
+
+    if (import.meta.env.PROD && redirectToGatewayFallback()) {
+      return;
+    }
 
     try {
       const controller = new AbortController();
@@ -195,12 +172,12 @@ export default function App() {
       <main className="flex-1 flex flex-col lg:flex-row w-full lg:overflow-hidden">
 
         {/* Left Column / Header Content */}
-        <div className="w-full lg:w-1/2 px-4 pt-6 pb-2 sm:p-8 lg:px-16 lg:py-10 flex flex-col justify-center relative shrink-0">
-          <div className="hidden lg:block absolute top-20 left-0 w-64 h-64 bg-[#0088cc]/10 rounded-full blur-[100px]"></div>
+        <div className="w-full lg:w-1/2 px-4 pt-6 pb-2 sm:p-8 lg:px-12 lg:pt-4 lg:pb-6 flex flex-col justify-center lg:justify-start relative shrink-0">
+          <div className="hidden lg:block absolute top-10 left-0 w-64 h-64 bg-[#0088cc]/10 rounded-full blur-[100px]"></div>
 
           <header className="w-full flex flex-col items-center relative text-center">
-            <div className="flex items-center justify-center mb-3 sm:mb-6">
-              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-20">
+            <div className="flex items-center justify-center mb-3 sm:mb-6 lg:mb-3">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-20">
                 <img
                   src="/profile.png"
                   alt="Profile"
@@ -210,7 +187,7 @@ export default function App() {
                   }}
                 />
               </div>
-              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-10 -ml-6 sm:-ml-8 lg:-ml-10 opacity-90 transition-all hover:z-30 hover:opacity-100">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-10 -ml-6 sm:-ml-8 lg:-ml-6 opacity-90 transition-all hover:z-30 hover:opacity-100">
                 <img
                   src="/imagem1.png"
                   alt="Profile 1"
@@ -220,7 +197,7 @@ export default function App() {
                   }}
                 />
               </div>
-              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-0 -ml-6 sm:-ml-8 lg:-ml-10 opacity-80 transition-all hover:z-30 hover:opacity-100">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-0 -ml-6 sm:-ml-8 lg:-ml-6 opacity-80 transition-all hover:z-30 hover:opacity-100">
                 <img
                   src="/imgagem2.png"
                   alt="Profile 2"
@@ -232,21 +209,21 @@ export default function App() {
               </div>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-light tracking-tight leading-tight mb-1 sm:mb-4">
+            <h1 className="text-2xl sm:text-4xl lg:text-[2.3rem] xl:text-[3.4rem] font-light tracking-tight leading-tight mb-1 sm:mb-4 lg:mb-2">
               Entre para o meu <br className="hidden lg:block" /><span className="font-medium italic text-[#0088cc]">VIP exclusivo</span> <br className="hidden lg:block" />no Telegram
             </h1>
-            <p className="hidden sm:block text-zinc-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-md mt-2">
+            <p className="hidden sm:block text-zinc-600 text-sm sm:text-base lg:text-base leading-relaxed max-w-md mt-2 lg:mt-1">
               Conteúdos exclusivos, bastidores e fotos que não publico em nenhum outro lugar.
             </p>
 
-            <div className="inline-flex items-center justify-center space-x-2 border border-[#0088cc]/20 bg-[#0088cc]/5 rounded-full px-3 lg:px-4 py-1.5 lg:py-2 mt-3 sm:mt-6 lg:mt-8">
+            <div className="inline-flex items-center justify-center space-x-2 border border-[#0088cc]/20 bg-[#0088cc]/5 rounded-full px-3 lg:px-4 py-1.5 lg:py-1.5 mt-3 sm:mt-6 lg:mt-5">
               <div className="w-2 h-2 rounded-full bg-[#0088cc] animate-pulse" />
               <span className="text-[10px] lg:text-[10px] sm:text-xs uppercase tracking-widest font-bold text-[#0088cc]">
                 {activeUsers} PESSOAS NA PÁGINA AGORA
               </span>
             </div>
 
-            <div className="hidden sm:block mt-6 sm:mt-8 lg:mt-6 w-full max-w-sm mx-auto rounded-2xl overflow-hidden shadow-2xl border border-zinc-200/50 relative group">
+            <div className="hidden sm:block mt-6 sm:mt-8 lg:mt-4 w-full max-w-[15rem] xl:max-w-[18rem] mx-auto rounded-2xl overflow-hidden shadow-2xl border border-zinc-200/50 relative group">
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
               <img
                 src="/flyer.png?t=1"
@@ -258,12 +235,12 @@ export default function App() {
               />
             </div>
 
-            <div className="hidden sm:flex pt-6 lg:pt-8 flex-wrap items-center justify-center gap-2">
+            <div className="hidden sm:flex pt-6 lg:pt-5 flex-wrap items-center justify-center gap-2">
               <span className="px-2 py-1 bg-gray-100 border border-gray-200 text-[10px] text-zinc-600 uppercase font-bold tracking-tighter">Verificado 18+</span>
               <span className="text-[10px] lg:text-[11px] text-zinc-500 uppercase tracking-widest">Ao assinar você confirma sua maioridade</span>
             </div>
 
-            <div className="mt-12 w-full max-w-md hidden sm:block mx-auto text-left">
+            <div className="mt-8 w-full max-w-md hidden xl:block mx-auto text-left">
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></div>
                 <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Membros VIP</span>
@@ -297,7 +274,7 @@ export default function App() {
         </div>
 
         {/* Right Column / Interaction Area */}
-        <div className="w-full lg:w-1/2 px-4 py-2 sm:py-8 lg:p-12 flex items-start lg:items-center justify-center sm:bg-gray-50 border-t lg:border-t-0 lg:border-l border-zinc-100 lg:h-full">
+        <div className="w-full lg:w-1/2 px-4 py-2 sm:py-8 lg:px-10 lg:py-6 flex items-start lg:items-center justify-center sm:bg-gray-50 border-t lg:border-t-0 lg:border-l border-zinc-100 lg:h-full">
           <div className="w-full max-w-[460px] flex flex-col justify-center">
             <AnimatePresence mode="wait">
               {step === 'checkout' && (
@@ -310,7 +287,7 @@ export default function App() {
                   className="space-y-3 sm:space-y-6"
                 >
                   {/* Product Card / Form Container */}
-                  <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl relative w-full mt-2 sm:mt-0">
+                  <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-6 shadow-2xl relative w-full mt-2 sm:mt-0">
                     <AnimatePresence mode="wait">
                       {discountTimeLeft > 0 ? (
                         <motion.div
@@ -335,7 +312,7 @@ export default function App() {
                       )}
                     </AnimatePresence>
 
-                    <div className="text-center mb-4 sm:mb-8 pt-4">
+                    <div className="text-center mb-4 sm:mb-8 lg:mb-5 pt-4 lg:pt-3">
                       {discountTimeLeft > 0 && (
                         <div className="text-[#0088cc] font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-1 sm:mb-2 animate-pulse">
                           Garanta seu desconto agora!
@@ -349,7 +326,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <ul className="space-y-1.5 sm:space-y-4 mb-4 sm:mb-8">
+                    <ul className="space-y-1.5 sm:space-y-4 lg:space-y-3 mb-4 sm:mb-8 lg:mb-5">
                       {[
                         "Acesso imediato após o pagamento",
                         "Conteúdo exclusivo +18",
@@ -363,56 +340,9 @@ export default function App() {
                       ))}
                     </ul>
 
-                    {/* Checkout Form */}
                     <form onSubmit={handleCheckout} className="space-y-3 sm:space-y-5">
-
-                      <div className="space-y-2 sm:space-y-4">
-                        <div className="space-y-1 text-center sm:text-left">
-                          <label className="text-[10px] sm:text-[10px] uppercase tracking-wider text-zinc-500 ml-1 leading-tight block">
-                            Contato Telegram/WhatsApp <span className="normal-case italic tracking-normal text-zinc-500 hidden sm:inline">(somente para mandar o link 🔞)</span>
-                          </label>
-                          <input
-                            ref={contactInputRef}
-                            required
-                            type="text"
-                            value={formData.contact}
-                            onChange={e => setFormData({ ...formData, contact: e.target.value })}
-                            placeholder="@usuario ou (00) 00000-0000"
-                            className="w-full bg-white border border-zinc-300 shadow-sm rounded-lg sm:rounded-xl px-3.5 sm:px-4 py-2.5 sm:py-3.5 text-sm sm:text-sm text-zinc-900 focus:outline-none focus:border-[#0088cc] transition-colors placeholder:text-zinc-400 text-center sm:text-left"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Payment Method (PIX only) */}
-                      <div className="pt-1 sm:pt-2">
-                        <div className="flex items-center justify-center gap-2 py-2.5 sm:py-3.5 rounded-lg sm:rounded-xl border bg-[#0088cc]/10 border-[#0088cc] text-[#0088cc]">
-                          <QrCode className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest">Pagamento via Pix</span>
-                        </div>
-                      </div>
-
-                      {/* 18+ Checkbox */}
-                      <label className="flex items-center justify-center sm:justify-start cursor-pointer group mt-1 sm:mt-2 py-1 sm:py-2 px-1">
-                        <div className={cn(
-                          "w-4 h-4 sm:w-4 sm:h-4 border rounded mt-0 flex flex-shrink-0 items-center justify-center transition-colors",
-                          ageConfirmed ? "bg-[#0088cc] border-[#0088cc]" : "border-zinc-300 bg-white group-hover:border-zinc-400"
-                        )}>
-                          {ageConfirmed && <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>}
-                        </div>
-                        <input
-                          type="checkbox"
-                          className="hidden"
-                          checked={ageConfirmed}
-                          onChange={(e) => setAgeConfirmed(e.target.checked)}
-                        />
-                        <span className="ml-2 sm:ml-3 text-[10px] sm:text-xs font-medium leading-tight text-zinc-600 group-hover:text-zinc-800 transition-colors">
-                          Confirmar maioridade (18+ anos)
-                        </span>
-                      </label>
-
-                      {/* Submit Area */}
-                      <div className="pt-1 sm:pt-2">
-                        <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-2 sm:mb-4 bg-[#0088cc]/10 py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl border border-[#0088cc]/20">
+                      <div className="pt-1 sm:pt-2 lg:pt-1">
+                        <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-2 sm:mb-4 lg:mb-3 bg-[#0088cc]/10 py-1.5 sm:py-2.5 lg:py-2 rounded-lg sm:rounded-xl border border-[#0088cc]/20">
                           <Timer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#0088cc]" />
                           <span className="text-[9px] sm:text-xs font-bold text-[#0088cc] uppercase tracking-widest">
                             {discountTimeLeft > 0
@@ -423,13 +353,12 @@ export default function App() {
                         <button
                           ref={submitButtonRef}
                           type="submit"
-                          disabled={!ageConfirmed || !formData.contact}
-                          className="w-full bg-[#0088cc] hover:bg-[#0077b5] text-white font-bold py-2.5 sm:py-4 rounded-lg sm:rounded-xl shadow-lg shadow-[#0088cc]/20 flex items-center justify-center uppercase tracking-widest sm:tracking-[0.2em] text-[11px] sm:text-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full bg-[#0088cc] hover:bg-[#0077b5] text-white font-bold py-2.5 sm:py-4 lg:py-3 rounded-lg sm:rounded-xl shadow-lg shadow-[#0088cc]/20 flex items-center justify-center uppercase tracking-widest sm:tracking-[0.2em] text-[11px] sm:text-sm active:scale-[0.98] transition-all"
                         >
                           Liberar meu acesso agora
                         </button>
 
-                        <p className="text-center text-[10px] sm:text-[10px] text-zinc-500 leading-tight px-1 sm:px-4 mt-2 sm:mt-4">
+                        <p className="text-center text-[10px] sm:text-[10px] text-zinc-500 leading-tight px-1 sm:px-4 mt-2 sm:mt-4 lg:mt-3">
                           Após a confirmação do pagamento, você receberá o link privado do grupo automaticamente.
                         </p>
                       </div>
@@ -437,7 +366,7 @@ export default function App() {
                   </div>
 
                   {/* Trust Badges below card */}
-                  <div className="flex justify-center gap-4 mt-3 sm:mt-6">
+                  <div className="flex justify-center gap-4 mt-3 sm:mt-6 lg:mt-4">
                     <div className="flex items-center gap-1 text-[8px] sm:text-[10px] text-zinc-500 uppercase tracking-widest leading-snug">
                       <Shield className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-zinc-600 flex-shrink-0" />
                       Compra segura
@@ -585,7 +514,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="hidden sm:flex w-full py-4 px-6 lg:px-12 border-t border-zinc-200 bg-white flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+      <footer className="hidden sm:flex w-full py-4 px-6 lg:px-10 border-t border-zinc-200 bg-white flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
         <div className="flex gap-6">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-gray-200 rounded flex items-center justify-center">
@@ -599,26 +528,6 @@ export default function App() {
         </div>
       </footer>
 
-      {step === 'checkout' && showMobileStickyCta && (
-        <div className="sm:hidden fixed bottom-0 inset-x-0 z-50 border-t border-zinc-200 bg-white/95 backdrop-blur px-3 py-2">
-          <div className="max-w-[460px] mx-auto flex items-center gap-2">
-            <div className="min-w-0 flex-1">
-              <div className="text-[10px] uppercase tracking-wider text-zinc-500">Acesso VIP por</div>
-              <div className="text-sm font-bold text-zinc-900">R$ 19,90</div>
-              <div className="text-[10px] font-semibold text-[#0088cc] uppercase">
-                {discountTimeLeft > 0 ? `Encerra em ${formatMinSec(discountTimeLeft)}` : 'Ultimas vagas'}
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={handleStickyCtaClick}
-              className="shrink-0 bg-[#0088cc] text-white text-[11px] font-bold uppercase tracking-wide px-4 py-3 rounded-xl"
-            >
-              Liberar acesso
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
