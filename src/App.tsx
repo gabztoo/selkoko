@@ -10,6 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export default function App() {
+  const gatewayCheckoutUrl = import.meta.env.VITE_GATEWAY_CHECKOUT_URL as string | undefined;
   const [activeUsers, setActiveUsers] = useState<number>(12);
   const [step, setStep] = useState<'checkout' | 'processing' | 'success' | 'pending' | 'failed'>('checkout');
   const [ageConfirmed, setAgeConfirmed] = useState(false);
@@ -115,22 +116,53 @@ export default function App() {
 
     setStep('processing');
 
-    // Simulate real API call to our backend
+    const fallbackToGateway = () => {
+      if (!gatewayCheckoutUrl) return false;
+      const gatewayUrl = new URL(gatewayCheckoutUrl);
+      gatewayUrl.searchParams.set('contact', formData.contact);
+      gatewayUrl.searchParams.set('success_url', `${window.location.origin}/checkout/success`);
+      gatewayUrl.searchParams.set('pending_url', `${window.location.origin}/checkout/pending`);
+      gatewayUrl.searchParams.set('failure_url', `${window.location.origin}/checkout/failure`);
+      window.location.assign(gatewayUrl.toString());
+      return true;
+    };
+
+    // Always prioritize the checkout URL configured by you.
+    if (fallbackToGateway()) return;
+
     try {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 12000);
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, paymentMethod: 'pix' })
+        body: JSON.stringify({ ...formData, paymentMethod: 'pix' }),
+        signal: controller.signal,
       });
-      const data = await res.json();
+      window.clearTimeout(timeoutId);
+      if (!res.ok) {
+        if (fallbackToGateway()) return;
+        throw new Error(`Checkout request failed: ${res.status}`);
+      }
+      const data = await res.json().catch(() => null);
       if (data.success && data.redirectUrl) {
-        window.location.href = data.redirectUrl;
+        const redirectCandidate = new URL(String(data.redirectUrl), window.location.origin);
+        const isLocalPendingFallback =
+          redirectCandidate.origin === window.location.origin &&
+          redirectCandidate.pathname.startsWith('/checkout/');
+
+        if (isLocalPendingFallback) {
+          throw new Error('Backend returned local fallback instead of gateway checkout URL');
+        }
+        window.location.assign(data.redirectUrl);
         return;
       }
-      setStep('checkout');
+      if (fallbackToGateway()) return;
+      throw new Error('Checkout response missing redirectUrl');
     } catch (err) {
       console.error(err);
-      setStep('checkout'); // Silent fail for prototype
+      if (fallbackToGateway()) return;
+      setStep('failed');
     }
   };
 

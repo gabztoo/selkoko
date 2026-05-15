@@ -43,18 +43,21 @@ async function startServer() {
     checkouts.set(checkoutId, { status: "pending" });
 
     const gatewayBaseUrl = process.env.GATEWAY_CHECKOUT_URL;
-    let redirectUrl = `${origin}/checkout/pending?checkout_id=${checkoutId}`;
-
-    // If configured, redirect straight to the real gateway checkout screen.
-    if (gatewayBaseUrl) {
-      const gatewayUrl = new URL(gatewayBaseUrl);
-      gatewayUrl.searchParams.set("checkout_id", checkoutId);
-      gatewayUrl.searchParams.set("contact", String(contact));
-      gatewayUrl.searchParams.set("success_url", `${origin}/checkout/success?checkout_id=${checkoutId}`);
-      gatewayUrl.searchParams.set("pending_url", `${origin}/checkout/pending?checkout_id=${checkoutId}`);
-      gatewayUrl.searchParams.set("failure_url", `${origin}/checkout/failure?checkout_id=${checkoutId}`);
-      redirectUrl = gatewayUrl.toString();
+    if (!gatewayBaseUrl) {
+      res.status(500).json({
+        success: false,
+        message: "GATEWAY_CHECKOUT_URL nao configurada no servidor",
+      });
+      return;
     }
+
+    const gatewayUrl = new URL(gatewayBaseUrl);
+    gatewayUrl.searchParams.set("checkout_id", checkoutId);
+    gatewayUrl.searchParams.set("contact", String(contact));
+    gatewayUrl.searchParams.set("success_url", `${origin}/checkout/success?checkout_id=${checkoutId}`);
+    gatewayUrl.searchParams.set("pending_url", `${origin}/checkout/pending?checkout_id=${checkoutId}`);
+    gatewayUrl.searchParams.set("failure_url", `${origin}/checkout/failure?checkout_id=${checkoutId}`);
+    const redirectUrl = gatewayUrl.toString();
 
     res.json({
       success: true,
