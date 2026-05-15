@@ -4,6 +4,7 @@ import { Check, Shield, Lock, QrCode, ArrowRight, Timer } from 'lucide-react';
 import { io } from 'socket.io-client';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Analytics } from '@vercel/analytics/react';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -551,6 +552,7 @@ export default function App() {
           </div>
         </div>
       )}
+      <Analytics />
     </div>
   );
 }
