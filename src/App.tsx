@@ -78,15 +78,15 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-[100dvh] lg:h-[100dvh] bg-[#050505] text-[#e5e7eb] font-sans selection:bg-red-600 selection:text-white flex flex-col overflow-y-auto no-scrollbar lg:overflow-hidden">
+    <div className="min-h-[100dvh] lg:h-[100dvh] bg-white text-zinc-900 font-sans selection:bg-[#0088cc] selection:text-white flex flex-col overflow-y-auto no-scrollbar lg:overflow-hidden">
       {/* Top Header matching Elegant Dark */}
-      <header className="hidden sm:flex w-full py-6 px-6 lg:px-12 border-b border-white/5 justify-between items-center bg-[#080808]">
+      <header className="hidden sm:flex w-full py-6 px-6 lg:px-12 border-b border-zinc-100 justify-between items-center bg-white">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-red-600 rounded-full animate-pulse"></div>
-          <span className="text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.4em] font-medium text-zinc-400 uppercase">Acesso VIP</span>
+          <div className="w-3 h-3 bg-[#0088cc] rounded-full animate-pulse"></div>
+          <span className="text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.4em] font-medium text-zinc-500 uppercase">Acesso VIP</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-[10px] text-zinc-500 uppercase tracking-widest border border-zinc-800 px-2 py-1">Acesso Privado</span>
+          <span className="text-[10px] text-zinc-500 uppercase tracking-widest border border-zinc-200 px-2 py-1">Acesso Privado</span>
         </div>
       </header>
 
@@ -94,58 +94,99 @@ export default function App() {
         
         {/* Left Column / Header Content */}
         <div className="w-full lg:w-1/2 px-4 pt-6 pb-2 sm:p-8 lg:p-16 flex flex-col justify-center relative shrink-0">
-          <div className="hidden lg:block absolute top-20 left-0 w-64 h-64 bg-red-900/10 rounded-full blur-[100px]"></div>
+          <div className="hidden lg:block absolute top-20 left-0 w-64 h-64 bg-[#0088cc]/10 rounded-full blur-[100px]"></div>
           
-          <header className="text-left w-full flex flex-col items-center sm:items-start relative text-center sm:text-left">
-            <div className="hidden sm:flex w-12 h-12 lg:w-16 lg:h-16 rounded-full overflow-hidden mb-4 lg:mb-6 border border-zinc-800 shadow-[0_0_20px_rgba(220,38,38,0.15)] items-center justify-center bg-[#0c0c0c]">
-              <span className="text-red-600 font-sans font-bold italic text-lg lg:text-xl">M</span>
+          <header className="w-full flex flex-col items-center relative text-center">
+            <div className="flex items-center justify-center mb-3 sm:mb-6">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-20">
+                <img 
+                  src="/profile.png" 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=300&auto=format&fit=crop";
+                  }}
+                />
+              </div>
+              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-10 -ml-6 sm:-ml-8 lg:-ml-10 opacity-90 transition-all hover:z-30 hover:opacity-100">
+                <img 
+                  src="/imagem1.png" 
+                  alt="Profile 1" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=300&auto=format&fit=crop";
+                  }}
+                />
+              </div>
+              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-0 -ml-6 sm:-ml-8 lg:-ml-10 opacity-80 transition-all hover:z-30 hover:opacity-100">
+                <img 
+                  src="/imgagem2.png" 
+                  alt="Profile 2" 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=300&auto=format&fit=crop";
+                  }}
+                />
+              </div>
             </div>
             
             <h1 className="text-2xl sm:text-4xl lg:text-6xl font-light tracking-tight leading-tight mb-1 sm:mb-4">
-              Entre para o meu <br className="hidden lg:block" /><span className="font-medium italic text-red-600">VIP exclusivo</span> <br className="hidden lg:block" />no Telegram
+              Entre para o meu <br className="hidden lg:block" /><span className="font-medium italic text-[#0088cc]">VIP exclusivo</span> <br className="hidden lg:block" />no Telegram
             </h1>
-            <p className="hidden sm:block text-zinc-400 text-sm sm:text-base lg:text-lg leading-relaxed max-w-md mt-2">
+            <p className="hidden sm:block text-zinc-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-md mt-2">
               Conteúdos exclusivos, bastidores e fotos que não publico em nenhum outro lugar.
             </p>
 
-            <div className="inline-flex items-center justify-center space-x-2 border border-red-600/20 bg-red-600/5 rounded-full px-3 lg:px-4 py-1.5 lg:py-2 mt-3 sm:mt-6 lg:mt-8">
-              <div className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-              <span className="text-[10px] lg:text-[10px] sm:text-xs uppercase tracking-widest font-bold text-red-600">
+            <div className="inline-flex items-center justify-center space-x-2 border border-[#0088cc]/20 bg-[#0088cc]/5 rounded-full px-3 lg:px-4 py-1.5 lg:py-2 mt-3 sm:mt-6 lg:mt-8">
+              <div className="w-2 h-2 rounded-full bg-[#0088cc] animate-pulse" />
+              <span className="text-[10px] lg:text-[10px] sm:text-xs uppercase tracking-widest font-bold text-[#0088cc]">
                 {activeUsers} PESSOAS NA PÁGINA AGORA
               </span>
             </div>
+
+            <div className="mt-6 sm:mt-10 w-full max-w-sm mx-auto rounded-2xl overflow-hidden shadow-2xl border border-zinc-200/50 relative group">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+              <img 
+                src="/flyer.png?t=1" 
+                alt="Flyer Promocional" 
+                className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700 relative z-0"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
             
-            <div className="hidden sm:flex pt-6 lg:pt-8 flex-wrap items-center gap-2">
-              <span className="px-2 py-1 bg-zinc-900 border border-zinc-800 text-[10px] text-zinc-400 uppercase font-bold tracking-tighter">Verificado 18+</span>
+            <div className="hidden sm:flex pt-6 lg:pt-8 flex-wrap items-center justify-center gap-2">
+              <span className="px-2 py-1 bg-gray-100 border border-gray-200 text-[10px] text-zinc-600 uppercase font-bold tracking-tighter">Verificado 18+</span>
               <span className="text-[10px] lg:text-[11px] text-zinc-500 uppercase tracking-widest">Ao assinar você confirma sua maioridade</span>
             </div>
 
-            <div className="mt-12 w-full max-w-md hidden sm:block">
+            <div className="mt-12 w-full max-w-md hidden sm:block mx-auto text-left">
               <div className="flex items-center gap-3 mb-6">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-800 to-transparent"></div>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></div>
                 <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Membros VIP</span>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-800 to-transparent"></div>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></div>
               </div>
               <div className="space-y-4">
                 {[
                   { name: "Lucas M.", text: "Melhor investimento. Os conteúdos de bastidores são incríveis e a atualização é quase todo dia." },
                   { name: "Rafael T.", text: "Sensacional! As mídias +18 são absurdas e o grupo é muito bem organizado. Recomendo demais!" },
                 ].map((testimonial, i) => (
-                  <div key={i} className="bg-zinc-900/20 border border-zinc-800/50 p-4 rounded-2xl">
+                  <div key={i} className="bg-gray-50 border border-gray-100 p-4 rounded-2xl">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700">
+                        <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center border border-gray-300">
                           <span className="text-[10px] font-bold text-zinc-500">{testimonial.name.charAt(0)}</span>
                         </div>
-                        <span className="text-xs font-bold text-zinc-300">{testimonial.name}</span>
+                        <span className="text-xs font-bold text-zinc-800">{testimonial.name}</span>
                       </div>
                       <div className="flex gap-0.5">
                         {[1, 2, 3, 4, 5].map(star => (
-                          <svg key={star} className="w-3 h-3 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                          <svg key={star} className="w-3 h-3 text-[#0088cc]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                         ))}
                       </div>
                     </div>
-                    <p className="text-sm text-zinc-400 font-light italic leading-relaxed">"{testimonial.text}"</p>
+                    <p className="text-sm text-zinc-600 font-light italic leading-relaxed">"{testimonial.text}"</p>
                   </div>
                 ))}
               </div>
@@ -154,7 +195,7 @@ export default function App() {
         </div>
 
         {/* Right Column / Interaction Area */}
-        <div className="w-full lg:w-1/2 px-4 py-2 sm:py-8 lg:p-12 flex items-start lg:items-center justify-center sm:bg-[#080808] border-t lg:border-t-0 lg:border-l border-white/5 lg:overflow-y-auto no-scrollbar">
+        <div className="w-full lg:w-1/2 px-4 py-2 sm:py-8 lg:p-12 flex items-start lg:items-center justify-center sm:bg-gray-50 border-t lg:border-t-0 lg:border-l border-zinc-100 lg:overflow-y-auto no-scrollbar">
           <div className="w-full max-w-[420px] flex flex-col justify-center">
             <AnimatePresence mode="wait">
               {step === 'checkout' && (
@@ -167,7 +208,7 @@ export default function App() {
                   className="space-y-3 sm:space-y-6"
                 >
                   {/* Product Card / Form Container */}
-                  <div className="bg-[#0c0c0c] border border-zinc-800/80 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl relative w-full mt-2 sm:mt-0">
+                  <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl relative w-full mt-2 sm:mt-0">
                     <AnimatePresence mode="wait">
                       {discountTimeLeft > 0 ? (
                         <motion.div
@@ -175,7 +216,7 @@ export default function App() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95 }}
-                          className="absolute -top-4 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[10px] font-bold uppercase px-4 py-1.5 rounded-full whitespace-nowrap shadow-lg shadow-red-900/20 flex items-center gap-2"
+                          className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#0088cc] text-white text-[10px] font-bold uppercase px-4 py-1.5 rounded-full whitespace-nowrap shadow-lg shadow-[#0088cc]/20 flex items-center gap-2"
                         >
                           <Timer className="w-3 h-3" />
                           <span>20% de desconto em {formatMinSec(discountTimeLeft)}</span>
@@ -185,7 +226,7 @@ export default function App() {
                           key="standard"
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-zinc-800 text-zinc-300 border border-zinc-700 text-[9px] sm:text-[10px] font-bold uppercase px-4 py-1 rounded-full whitespace-nowrap"
+                          className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gray-100 text-zinc-600 border border-gray-200 text-[9px] sm:text-[10px] font-bold uppercase px-4 py-1 rounded-full whitespace-nowrap"
                         >
                           Acesso Liberado Automaticamente
                         </motion.div>
@@ -194,15 +235,15 @@ export default function App() {
 
                     <div className="text-center mb-4 sm:mb-8 pt-4">
                       {discountTimeLeft > 0 && (
-                        <div className="text-red-500 font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-1 sm:mb-2 animate-pulse">
+                        <div className="text-[#0088cc] font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-1 sm:mb-2 animate-pulse">
                           Garanta seu desconto agora!
                         </div>
                       )}
-                      <h2 className="text-zinc-400 uppercase text-[10px] tracking-widest mb-0 sm:mb-1">Acesso VIP Telegram</h2>
+                      <h2 className="text-zinc-500 uppercase text-[10px] tracking-widest mb-0 sm:mb-1">Acesso VIP Telegram</h2>
                       <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-lg sm:text-2xl font-light text-zinc-500">R$</span>
-                        <span className="text-3xl sm:text-5xl font-medium tracking-tighter text-white">19,90</span>
-                        <span className="text-[10px] sm:text-sm font-light text-zinc-500 ml-1">/mês</span>
+                        <span className="text-lg sm:text-2xl font-medium text-zinc-500">R$</span>
+                        <span className="text-3xl sm:text-5xl font-semibold tracking-tighter text-zinc-900">19,90</span>
+                        <span className="text-[10px] sm:text-sm font-medium text-zinc-500 ml-1">/mês</span>
                       </div>
                     </div>
 
@@ -213,8 +254,8 @@ export default function App() {
                         "+500 mídias das modelos mais famosas",
                         "Grupo privado no Telegram",
                       ].map((benefit, i) => (
-                        <li key={i} className="flex items-center text-[10px] sm:text-sm font-medium text-zinc-300 leading-tight">
-                          <svg className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-red-600 mr-2 sm:mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                        <li key={i} className="flex items-center text-[10px] sm:text-sm font-medium text-zinc-700 leading-tight">
+                          <svg className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-[#0088cc] mr-2 sm:mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
                           {benefit}
                         </li>
                       ))}
@@ -226,7 +267,7 @@ export default function App() {
                       <div className="space-y-2 sm:space-y-4">
                         <div className="space-y-1 text-center sm:text-left">
                           <label className="text-[9px] sm:text-[10px] uppercase tracking-wider text-zinc-500 ml-1 leading-tight block">
-                            Contato Telegram/WhatsApp <span className="normal-case italic tracking-normal text-zinc-400 hidden sm:inline">(somente para mandar o link 🔞)</span>
+                            Contato Telegram/WhatsApp <span className="normal-case italic tracking-normal text-zinc-500 hidden sm:inline">(somente para mandar o link 🔞)</span>
                           </label>
                           <input
                             required
@@ -234,7 +275,7 @@ export default function App() {
                             value={formData.contact}
                             onChange={e => setFormData({ ...formData, contact: e.target.value })}
                             placeholder="@usuario ou (00) 00000-0000"
-                            className="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3.5 text-xs sm:text-sm text-white focus:outline-none focus:border-red-600/50 transition-colors placeholder:text-zinc-600 text-center sm:text-left"
+                            className="w-full bg-white border border-zinc-300 shadow-sm rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3.5 text-xs sm:text-sm text-zinc-900 focus:outline-none focus:border-[#0088cc] transition-colors placeholder:text-zinc-400 text-center sm:text-left"
                           />
                         </div>
                       </div>
@@ -248,11 +289,11 @@ export default function App() {
                             className={cn(
                               "flex items-center justify-center gap-2 py-2 sm:py-3.5 rounded-lg sm:rounded-xl transition-all border",
                               paymentMethod === 'pix' 
-                                ? "bg-red-600/10 border-red-600 text-white" 
-                                : "bg-transparent border-zinc-800 text-zinc-400 hover:bg-zinc-800"
+                                ? "bg-[#0088cc]/10 border-[#0088cc] text-[#0088cc]" 
+                                : "bg-white border-zinc-200 text-zinc-600 hover:bg-gray-50 hover:border-zinc-300"
                             )}
                           >
-                            <QrCode className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", paymentMethod === 'pix' ? "text-red-600" : "")} />
+                            <QrCode className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", paymentMethod === 'pix' ? "text-[#0088cc]" : "")} />
                             <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest">Pix</span>
                           </button>
                           <button
@@ -261,11 +302,11 @@ export default function App() {
                             className={cn(
                               "flex items-center justify-center gap-2 py-2 sm:py-3.5 rounded-lg sm:rounded-xl transition-all border",
                               paymentMethod === 'credit' 
-                                ? "bg-red-600/10 border-red-600 text-white" 
-                                : "bg-transparent border-zinc-800 text-zinc-400 hover:bg-zinc-800"
+                                ? "bg-[#0088cc]/10 border-[#0088cc] text-[#0088cc]" 
+                                : "bg-white border-zinc-200 text-zinc-600 hover:bg-gray-50 hover:border-zinc-300"
                             )}
                           >
-                            <CreditCard className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", paymentMethod === 'credit' ? "text-red-600" : "")} />
+                            <CreditCard className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", paymentMethod === 'credit' ? "text-[#0088cc]" : "")} />
                             <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest">Cartão</span>
                           </button>
                         </div>
@@ -275,7 +316,7 @@ export default function App() {
                       <label className="flex items-center justify-center sm:justify-start cursor-pointer group mt-1 sm:mt-2 py-1 sm:py-2 px-1">
                         <div className={cn(
                           "w-4 h-4 sm:w-4 sm:h-4 border rounded mt-0 flex flex-shrink-0 items-center justify-center transition-colors",
-                          ageConfirmed ? "bg-red-600 border-red-600" : "border-zinc-700 bg-zinc-900/50 group-hover:border-zinc-500"
+                          ageConfirmed ? "bg-[#0088cc] border-[#0088cc]" : "border-zinc-300 bg-white group-hover:border-zinc-400"
                         )}>
                           {ageConfirmed && <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>}
                         </div>
@@ -285,16 +326,16 @@ export default function App() {
                           checked={ageConfirmed}
                           onChange={(e) => setAgeConfirmed(e.target.checked)}
                         />
-                        <span className="ml-2 sm:ml-3 text-[10px] sm:text-xs font-medium leading-tight text-zinc-400 group-hover:text-zinc-300 transition-colors">
+                        <span className="ml-2 sm:ml-3 text-[10px] sm:text-xs font-medium leading-tight text-zinc-600 group-hover:text-zinc-800 transition-colors">
                           Confirmar maioridade (18+ anos)
                         </span>
                       </label>
 
                       {/* Submit Area */}
                       <div className="pt-1 sm:pt-2">
-                        <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-2 sm:mb-4 bg-red-900/10 py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl border border-red-900/20">
-                          <Timer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500" />
-                          <span className="text-[9px] sm:text-xs font-bold text-red-500 uppercase tracking-widest">
+                        <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-2 sm:mb-4 bg-[#0088cc]/10 py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl border border-[#0088cc]/20">
+                          <Timer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#0088cc]" />
+                          <span className="text-[9px] sm:text-xs font-bold text-[#0088cc] uppercase tracking-widest">
                             {discountTimeLeft > 0 
                               ? `Oferta encerra em: ${formatTime(timeLeft)}` 
                               : "Vagas quase esgotadas"}
@@ -303,7 +344,7 @@ export default function App() {
                         <button
                           type="submit"
                           disabled={!ageConfirmed || !formData.contact}
-                          className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 sm:py-4 rounded-lg sm:rounded-xl shadow-lg shadow-red-900/20 flex items-center justify-center uppercase tracking-widest sm:tracking-[0.2em] text-[11px] sm:text-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-full bg-[#0088cc] hover:bg-[#0077b5] text-white font-bold py-2.5 sm:py-4 rounded-lg sm:rounded-xl shadow-lg shadow-[#0088cc]/20 flex items-center justify-center uppercase tracking-widest sm:tracking-[0.2em] text-[11px] sm:text-sm active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           Liberar meu acesso agora
                         </button>
@@ -335,11 +376,11 @@ export default function App() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="w-full max-w-[420px] bg-[#0c0c0c] border border-zinc-800 rounded-3xl p-12 shadow-2xl flex flex-col items-center justify-center text-center mx-auto"
+                  className="w-full max-w-[420px] bg-white border border-zinc-200 rounded-3xl p-12 shadow-2xl flex flex-col items-center justify-center text-center mx-auto"
                 >
-                  <div className="w-12 h-12 border-2 border-red-600/20 border-t-red-600 rounded-full animate-spin mb-6" />
-                  <h2 className="text-lg font-bold text-white mb-2 uppercase tracking-wide">Processando...</h2>
-                  <p className="text-zinc-500 text-sm">Validando pagamento de forma segura.</p>
+                  <div className="w-12 h-12 border-2 border-[#0088cc]/20 border-t-[#0088cc] rounded-full animate-spin mb-6" />
+                  <h2 className="text-lg font-bold text-zinc-900 mb-2 uppercase tracking-wide">Processando...</h2>
+                  <p className="text-zinc-600 text-sm">Validando pagamento de forma segura.</p>
                 </motion.div>
               )}
 
@@ -350,14 +391,14 @@ export default function App() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="w-full max-w-[420px] space-y-6 mx-auto"
                 >
-                  <div className="bg-[#0c0c0c] border border-zinc-800 rounded-3xl p-8 shadow-2xl text-center flex flex-col items-center">
-                    <div className="w-16 h-16 bg-red-600/10 border border-red-600/30 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(220,38,38,0.2)]">
-                      <Check className="w-8 h-8 text-red-600" />
+                  <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-2xl text-center flex flex-col items-center">
+                    <div className="w-16 h-16 bg-[#0088cc]/10 border border-[#0088cc]/30 rounded-full flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(0,136,204,0.2)]">
+                      <Check className="w-8 h-8 text-[#0088cc]" />
                     </div>
                     
                     <div className="space-y-3 mb-8">
-                      <h2 className="text-2xl font-light text-white">Pagamento Aprovado</h2>
-                      <p className="text-zinc-400 text-sm leading-relaxed max-w-[240px] mx-auto">
+                      <h2 className="text-2xl font-semibold text-zinc-900">Pagamento Aprovado</h2>
+                      <p className="text-zinc-600 text-sm leading-relaxed max-w-[240px] mx-auto">
                         Seu acesso VIP foi liberado com sucesso. Tudo pronto para você entrar!
                       </p>
                     </div>
@@ -374,7 +415,7 @@ export default function App() {
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </a>
                       
-                      <div className="pt-6 mt-4 border-t border-zinc-800 text-[10px] text-zinc-500 leading-relaxed uppercase tracking-wider italic">
+                      <div className="pt-6 mt-4 border-t border-zinc-200 text-[10px] text-zinc-500 leading-relaxed uppercase tracking-wider italic">
                         Link pessoal vinculado ao e-mail. Não compartilhe com terceiros.
                       </div>
                     </div>
@@ -387,16 +428,16 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="hidden sm:flex w-full py-4 px-6 lg:px-12 border-t border-white/5 bg-[#050505] flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+      <footer className="hidden sm:flex w-full py-4 px-6 lg:px-12 border-t border-zinc-200 bg-white flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
         <div className="flex gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-zinc-800 rounded flex items-center justify-center">
-              <svg className="w-2.5 h-2.5 text-zinc-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"></path></svg>
+            <div className="w-4 h-4 bg-gray-200 rounded flex items-center justify-center">
+              <svg className="w-2.5 h-2.5 text-zinc-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"></path></svg>
             </div>
             <span className="text-[10px] text-zinc-500 uppercase tracking-widest">Pagamento 100% Seguro</span>
           </div>
         </div>
-        <div className="text-[10px] text-zinc-600 uppercase tracking-widest italic">
+        <div className="text-[10px] text-zinc-500 uppercase tracking-widest italic">
           Acesso individual e intransferível • Proibido compartilhamento
         </div>
       </footer>
