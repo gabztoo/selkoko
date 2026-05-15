@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Check, Shield, Lock, ArrowRight, Timer } from 'lucide-react';
 import { io } from 'socket.io-client';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   const gatewayCheckoutUrl = import.meta.env.VITE_GATEWAY_CHECKOUT_URL as string | undefined;
@@ -520,6 +521,7 @@ export default function App() {
         </div>
       </footer>
 
+      <Analytics />
     </div>
   );
 }
