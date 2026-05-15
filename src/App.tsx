@@ -342,14 +342,6 @@ export default function App() {
 
                     <form onSubmit={handleCheckout} className="space-y-3 sm:space-y-5">
                       <div className="pt-1 sm:pt-2 lg:pt-1">
-                        <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-2 sm:mb-4 lg:mb-3 bg-[#0088cc]/10 py-1.5 sm:py-2.5 lg:py-2 rounded-lg sm:rounded-xl border border-[#0088cc]/20">
-                          <Timer className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#0088cc]" />
-                          <span className="text-[9px] sm:text-xs font-bold text-[#0088cc] uppercase tracking-widest">
-                            {discountTimeLeft > 0
-                              ? `Oferta encerra em: ${formatTime(timeLeft)}`
-                              : "Vagas quase esgotadas"}
-                          </span>
-                        </div>
                         <button
                           ref={submitButtonRef}
                           type="submit"
