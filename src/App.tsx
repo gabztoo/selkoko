@@ -10,6 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export default function App() {
+  const gatewayCheckoutUrl = import.meta.env.VITE_GATEWAY_CHECKOUT_URL as string | undefined;
   const [activeUsers, setActiveUsers] = useState<number>(12);
   const [step, setStep] = useState<'checkout' | 'processing' | 'success' | 'pending' | 'failed' | 'checkout_error'>('checkout');
   const [ageConfirmed, setAgeConfirmed] = useState(false);
@@ -119,6 +120,18 @@ export default function App() {
     setTimeout(() => contactInputRef.current?.focus(), 250);
   };
 
+  const redirectToGatewayFallback = () => {
+    if (!gatewayCheckoutUrl) return false;
+
+    try {
+      window.location.assign(gatewayCheckoutUrl);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ageConfirmed) return;
@@ -139,6 +152,9 @@ export default function App() {
       window.clearTimeout(timeoutId);
       const data = await res.json().catch(() => null);
       if (!res.ok) {
+        if (res.status === 404 && redirectToGatewayFallback()) {
+          return;
+        }
         if (data?.code === 'checkout_init_failed') {
           throw new Error(data.message || 'Erro ao abrir checkout');
         }
@@ -154,6 +170,9 @@ export default function App() {
       throw new Error('Checkout response missing redirectUrl');
     } catch (err) {
       console.error(err);
+      if (redirectToGatewayFallback()) {
+        return;
+      }
       const message = err instanceof Error ? err.message : 'Nao foi possivel abrir o checkout no momento.';
       setCheckoutErrorMessage(message);
       setStep('checkout_error');
