@@ -137,7 +137,7 @@ export default function App() {
   return (
     <div className="min-h-[100dvh] lg:h-[100dvh] bg-white text-zinc-900 font-sans selection:bg-[#0088cc] selection:text-white flex flex-col overflow-y-auto no-scrollbar lg:overflow-hidden">
       {/* Top Header matching Elegant Dark */}
-      <header className="hidden sm:flex w-full py-6 px-6 lg:py-4 lg:px-10 border-b border-zinc-100 justify-between items-center bg-white shrink-0">
+      <header className="hidden sm:flex w-full py-6 px-6 lg:px-12 border-b border-zinc-100 justify-between items-center bg-white">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 bg-[#0088cc] rounded-full animate-pulse"></div>
           <span className="text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.4em] font-medium text-zinc-500 uppercase">Acesso VIP</span>
@@ -147,15 +147,15 @@ export default function App() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col lg:flex-row w-full lg:overflow-hidden min-h-0">
+      <main className="flex-1 flex flex-col lg:flex-row w-full lg:overflow-hidden">
 
         {/* Left Column / Header Content */}
-        <div className="w-full lg:w-1/2 px-4 pt-6 pb-2 sm:p-8 lg:px-14 lg:py-4 flex flex-col justify-center lg:justify-start relative shrink-0">
-          <div className="hidden lg:block absolute top-10 left-0 w-56 h-56 bg-[#0088cc]/10 rounded-full blur-[100px]"></div>
+        <div className="w-full lg:w-1/2 px-4 pt-6 pb-2 sm:p-8 lg:px-16 lg:py-10 flex flex-col justify-center relative shrink-0">
+          <div className="hidden lg:block absolute top-20 left-0 w-64 h-64 bg-[#0088cc]/10 rounded-full blur-[100px]"></div>
 
           <header className="w-full flex flex-col items-center relative text-center">
-            <div className="flex items-center justify-center mb-3 sm:mb-6 lg:mb-3">
-              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-24 lg:h-24 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-20">
+            <div className="flex items-center justify-center mb-3 sm:mb-6">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-20">
                 <img
                   src="/profile.png"
                   alt="Profile"
@@ -165,7 +165,7 @@ export default function App() {
                   }}
                 />
               </div>
-              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-24 lg:h-24 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-10 -ml-6 sm:-ml-8 lg:-ml-8 opacity-90 transition-all hover:z-30 hover:opacity-100">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-10 -ml-6 sm:-ml-8 lg:-ml-10 opacity-90 transition-all hover:z-30 hover:opacity-100">
                 <img
                   src="/imagem1.png"
                   alt="Profile 1"
@@ -175,7 +175,7 @@ export default function App() {
                   }}
                 />
               </div>
-              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-24 lg:h-24 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-0 -ml-6 sm:-ml-8 lg:-ml-8 opacity-80 transition-all hover:z-30 hover:opacity-100">
+              <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-2 border-[#0088cc]/30 shadow-[0_0_30px_rgba(0,136,204,0.1)] flex items-center justify-center bg-white shrink-0 relative z-0 -ml-6 sm:-ml-8 lg:-ml-10 opacity-80 transition-all hover:z-30 hover:opacity-100">
                 <img
                   src="/imgagem2.png"
                   alt="Profile 2"
@@ -187,21 +187,21 @@ export default function App() {
               </div>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl lg:text-4xl xl:text-5xl font-light tracking-tight leading-tight mb-1 sm:mb-4 lg:mb-2">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-light tracking-tight leading-tight mb-1 sm:mb-4">
               Entre para o meu <br className="hidden lg:block" /><span className="font-medium italic text-[#0088cc]">VIP exclusivo</span> <br className="hidden lg:block" />no Telegram
             </h1>
-            <p className="hidden sm:block text-zinc-600 text-sm sm:text-base lg:text-base leading-relaxed max-w-md mt-2 lg:mt-1">
+            <p className="hidden sm:block text-zinc-600 text-sm sm:text-base lg:text-lg leading-relaxed max-w-md mt-2">
               Conteúdos exclusivos, bastidores e fotos que não publico em nenhum outro lugar.
             </p>
 
-            <div className="inline-flex items-center justify-center space-x-2 border border-[#0088cc]/20 bg-[#0088cc]/5 rounded-full px-3 lg:px-4 py-1.5 lg:py-1.5 mt-3 sm:mt-6 lg:mt-4">
+            <div className="inline-flex items-center justify-center space-x-2 border border-[#0088cc]/20 bg-[#0088cc]/5 rounded-full px-3 lg:px-4 py-1.5 lg:py-2 mt-3 sm:mt-6 lg:mt-8">
               <div className="w-2 h-2 rounded-full bg-[#0088cc] animate-pulse" />
               <span className="text-[10px] lg:text-[10px] sm:text-xs uppercase tracking-widest font-bold text-[#0088cc]">
                 {activeUsers} PESSOAS NA PÁGINA AGORA
               </span>
             </div>
 
-            <div className="hidden sm:block mt-6 sm:mt-8 lg:mt-4 w-full max-w-sm lg:max-w-[250px] xl:max-w-[280px] mx-auto rounded-2xl overflow-hidden shadow-2xl border border-zinc-200/50 relative group">
+            <div className="hidden sm:block mt-6 sm:mt-8 lg:mt-6 w-full max-w-sm mx-auto rounded-2xl overflow-hidden shadow-2xl border border-zinc-200/50 relative group">
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
               <img
                 src="/flyer.png?t=1"
@@ -213,23 +213,23 @@ export default function App() {
               />
             </div>
 
-            <div className="hidden sm:flex pt-6 lg:pt-4 flex-wrap items-center justify-center gap-2">
+            <div className="hidden sm:flex pt-6 lg:pt-8 flex-wrap items-center justify-center gap-2">
               <span className="px-2 py-1 bg-gray-100 border border-gray-200 text-[10px] text-zinc-600 uppercase font-bold tracking-tighter">Verificado 18+</span>
               <span className="text-[10px] lg:text-[11px] text-zinc-500 uppercase tracking-widest">Ao assinar você confirma sua maioridade</span>
             </div>
 
-            <div className="mt-12 lg:mt-5 w-full max-w-md hidden sm:block mx-auto text-left">
-              <div className="flex items-center gap-3 mb-4">
+            <div className="mt-12 w-full max-w-md hidden sm:block mx-auto text-left">
+              <div className="flex items-center gap-3 mb-6">
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></div>
                 <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500">Membros VIP</span>
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></div>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {[
-                  { name: "Lucas M.", text: "Melhor investimento. Só tem as mais rabuda que gosto" },
-                  { name: "Rafael T.", text: "Sensacional! Só tem gostosa kkk" },
+                  { name: "Anônimo 5091", text: "Melhor investimento. Só tem as mais rabuda que gosto" },
+                  { name: "Anônimo 2840", text: "Sensacional! Só tem gostosa kkk" },
                 ].map((testimonial, i) => (
-                  <div key={i} className="bg-gray-50 border border-gray-100 p-3 lg:p-2.5 xl:p-3 rounded-2xl">
+                  <div key={i} className="bg-gray-50 border border-gray-100 p-4 rounded-2xl">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center border border-gray-300">
@@ -243,7 +243,7 @@ export default function App() {
                         ))}
                       </div>
                     </div>
-                    <p className="text-sm lg:text-xs xl:text-sm text-zinc-600 font-light italic leading-relaxed">"{testimonial.text}"</p>
+                    <p className="text-sm text-zinc-600 font-light italic leading-relaxed">"{testimonial.text}"</p>
                   </div>
                 ))}
               </div>
@@ -252,8 +252,8 @@ export default function App() {
         </div>
 
         {/* Right Column / Interaction Area */}
-        <div className="w-full lg:w-1/2 px-4 py-2 sm:py-8 lg:px-8 lg:py-4 xl:px-10 flex items-start lg:items-center justify-center sm:bg-gray-50 border-t lg:border-t-0 lg:border-l border-zinc-100 lg:h-full">
-          <div className="w-full max-w-[460px] lg:max-w-[430px] flex flex-col justify-center">
+        <div className="w-full lg:w-1/2 px-4 py-2 sm:py-8 lg:p-12 flex items-start lg:items-center justify-center sm:bg-gray-50 border-t lg:border-t-0 lg:border-l border-zinc-100 lg:h-full">
+          <div className="w-full max-w-[460px] flex flex-col justify-center">
             <AnimatePresence mode="wait">
               {step === 'checkout' && (
                 <motion.div
@@ -262,10 +262,10 @@ export default function App() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.4 }}
-                  className="space-y-3 sm:space-y-6 lg:space-y-3"
+                  className="space-y-3 sm:space-y-6"
                 >
                   {/* Product Card / Form Container */}
-                  <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-6 shadow-2xl relative w-full mt-2 sm:mt-0">
+                  <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl relative w-full mt-2 sm:mt-0">
                     <AnimatePresence mode="wait">
                       {discountTimeLeft > 0 ? (
                         <motion.div
@@ -290,7 +290,7 @@ export default function App() {
                       )}
                     </AnimatePresence>
 
-                    <div className="text-center mb-4 sm:mb-8 lg:mb-5 pt-4 lg:pt-3">
+                    <div className="text-center mb-4 sm:mb-8 pt-4">
                       {discountTimeLeft > 0 && (
                         <div className="text-[#0088cc] font-bold text-[10px] sm:text-xs uppercase tracking-widest mb-1 sm:mb-2 animate-pulse">
                           Garanta seu desconto agora!
@@ -304,7 +304,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <ul className="space-y-1.5 sm:space-y-4 lg:space-y-2.5 mb-4 sm:mb-8 lg:mb-5">
+                    <ul className="space-y-1.5 sm:space-y-4 mb-4 sm:mb-8">
                       {[
                         "Acesso imediato após o pagamento",
                         "Conteúdo exclusivo +18",
@@ -319,7 +319,7 @@ export default function App() {
                     </ul>
 
                     {/* Checkout Form */}
-                    <form onSubmit={handleCheckout} className="space-y-3 sm:space-y-5 lg:space-y-3">
+                    <form onSubmit={handleCheckout} className="space-y-3 sm:space-y-5">
 
                       <div className="space-y-2 sm:space-y-4">
                         <div className="space-y-1 text-center sm:text-left">
@@ -517,7 +517,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="hidden sm:flex w-full py-4 lg:py-3 px-6 lg:px-10 border-t border-zinc-200 bg-white flex-col sm:flex-row justify-between items-center gap-4 lg:gap-3 text-center sm:text-left shrink-0">
+      <footer className="hidden sm:flex w-full py-4 px-6 lg:px-12 border-t border-zinc-200 bg-white flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
         <div className="flex gap-6">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 bg-gray-200 rounded flex items-center justify-center">
