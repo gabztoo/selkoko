@@ -10,6 +10,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function startServer() {
+  const gatewayBaseUrlRaw = process.env.GATEWAY_CHECKOUT_URL;
+  if (!gatewayBaseUrlRaw) {
+    throw new Error("GATEWAY_CHECKOUT_URL nao configurada no servidor");
+  }
+
+  let gatewayCheckoutBase: URL;
+  try {
+    gatewayCheckoutBase = new URL(gatewayBaseUrlRaw);
+  } catch {
+    throw new Error(`GATEWAY_CHECKOUT_URL invalida: ${gatewayBaseUrlRaw}`);
+  }
+
+  console.log(`[checkout] GATEWAY_CHECKOUT_URL carregada para ${gatewayCheckoutBase.origin}`);
+
   const app = express();
   const PORT = 3000;
   type CheckoutPhase = "created" | "redirected" | "pending" | "approved" | "failed";
@@ -61,7 +75,6 @@ async function startServer() {
   // API route example (can be used to process mock payment)
   app.use(express.json());
   app.post("/api/checkout", (req, res) => {
-    const origin = req.headers.origin || `http://localhost:${PORT}`;
     const { contact = "" } = req.body ?? {};
     const checkoutId = `chk_${Date.now()}`;
     const createdAt = nowIso();
@@ -72,25 +85,26 @@ async function startServer() {
       updatedAt: createdAt,
     });
 
-    const gatewayBaseUrl = process.env.GATEWAY_CHECKOUT_URL;
-    if (!gatewayBaseUrl) {
+    if (!gatewayCheckoutBase?.href) {
       res.status(500).json({
         success: false,
+        code: "checkout_init_failed",
         message: "GATEWAY_CHECKOUT_URL nao configurada no servidor",
       });
       return;
     }
 
-    const gatewayUrl = new URL(gatewayBaseUrl);
-    gatewayUrl.searchParams.set("checkout_id", checkoutId);
-    gatewayUrl.searchParams.set("contact", String(contact));
-    const approvedReturn = `${origin}/?payment=approved&checkout_id=${checkoutId}&link=${encodeURIComponent("https://t.me/+fake_invite_link_123")}`;
-    const pendingReturn = `${origin}/?payment=pending&checkout_id=${checkoutId}`;
-    const failedReturn = `${origin}/?payment=failed&checkout_id=${checkoutId}`;
-    gatewayUrl.searchParams.set("success_url", approvedReturn);
-    gatewayUrl.searchParams.set("pending_url", pendingReturn);
-    gatewayUrl.searchParams.set("failure_url", failedReturn);
-    const redirectUrl = gatewayUrl.toString();
+    let redirectUrl: string;
+    try {
+      redirectUrl = gatewayCheckoutBase.toString();
+    } catch {
+      res.status(500).json({
+        success: false,
+        code: "checkout_init_failed",
+        message: "GATEWAY_CHECKOUT_URL invalida no servidor",
+      });
+      return;
+    }
     const current = checkouts.get(checkoutId);
     if (current) {
       checkouts.set(checkoutId, { ...current, status: "redirected", updatedAt: nowIso() });
@@ -216,4 +230,8 @@ async function startServer() {
   });
 }
 
-startServer();
+startServer().catch((error) => {
+  const message = error instanceof Error ? error.message : "Erro desconhecido ao iniciar o servidor";
+  console.error(`[startup] ${message}`);
+  process.exit(1);
+});

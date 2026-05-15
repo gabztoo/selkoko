@@ -11,11 +11,12 @@ export function cn(...inputs: ClassValue[]) {
 
 export default function App() {
   const [activeUsers, setActiveUsers] = useState<number>(12);
-  const [step, setStep] = useState<'checkout' | 'processing' | 'success' | 'pending' | 'failed'>('checkout');
+  const [step, setStep] = useState<'checkout' | 'processing' | 'success' | 'pending' | 'failed' | 'checkout_error'>('checkout');
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [formData, setFormData] = useState({ contact: '' });
   const [telegramLink, setTelegramLink] = useState('');
   const [checkoutId, setCheckoutId] = useState('');
+  const [checkoutErrorMessage, setCheckoutErrorMessage] = useState('');
   const [timeLeft, setTimeLeft] = useState(2 * 3600 + 45 * 60 + 12); // Initial time 02:45:12
   const [discountTimeLeft, setDiscountTimeLeft] = useState(10 * 60);
   const [showMobileStickyCta, setShowMobileStickyCta] = useState(true);
@@ -61,6 +62,7 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
     const payment = params.get('payment');
     const link = params.get('link');
+    const reason = params.get('reason');
     const checkoutFromQuery = params.get('checkout_id');
     const checkoutFromStorage = window.localStorage.getItem('lastCheckoutId');
     const checkout = checkoutFromQuery || checkoutFromStorage;
@@ -70,6 +72,10 @@ export default function App() {
     if (payment === 'approved') setStep('pending');
     if (payment === 'pending') setStep('pending');
     if (payment === 'failed') setStep('failed');
+    if (reason === 'missing_checkout_id') {
+      setCheckoutErrorMessage('Nao foi possivel identificar o pedido no retorno do gateway.');
+      setStep('checkout_error');
+    }
   }, []);
 
   useEffect(() => {
@@ -117,6 +123,8 @@ export default function App() {
     e.preventDefault();
     if (!ageConfirmed) return;
 
+    window.localStorage.removeItem('lastCheckoutId');
+    setCheckoutErrorMessage('');
     setStep('processing');
 
     try {
@@ -129,10 +137,13 @@ export default function App() {
         signal: controller.signal,
       });
       window.clearTimeout(timeoutId);
+      const data = await res.json().catch(() => null);
       if (!res.ok) {
+        if (data?.code === 'checkout_init_failed') {
+          throw new Error(data.message || 'Erro ao abrir checkout');
+        }
         throw new Error(`Checkout request failed: ${res.status}`);
       }
-      const data = await res.json().catch(() => null);
       if (data.success && data.redirectUrl) {
         if (data.checkoutId) {
           window.localStorage.setItem('lastCheckoutId', String(data.checkoutId));
@@ -143,7 +154,9 @@ export default function App() {
       throw new Error('Checkout response missing redirectUrl');
     } catch (err) {
       console.error(err);
-      setStep('failed');
+      const message = err instanceof Error ? err.message : 'Nao foi possivel abrir o checkout no momento.';
+      setCheckoutErrorMessage(message);
+      setStep('checkout_error');
     }
   };
 
@@ -479,7 +492,7 @@ export default function App() {
                   className="w-full max-w-[460px] space-y-6 mx-auto"
                 >
                   <div className="bg-white border border-zinc-200 rounded-3xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center">
-                    <h2 className="text-2xl font-semibold text-zinc-900">Aguardando confirmacao final</h2>
+                    <h2 className="text-2xl font-semibold text-zinc-900">✅ Pagamento Aprovado ✅</h2>
                     <p className="text-zinc-600 text-sm leading-relaxed max-w-[280px] mx-auto mt-3">
                       Seu pagamento foi aprovado. Aguarde: seu link chegara em poucos instantes no contato cadastrado.
                     </p>
@@ -500,6 +513,29 @@ export default function App() {
                     <h2 className="text-2xl font-semibold text-zinc-900">Pagamento não aprovado</h2>
                     <p className="text-zinc-600 text-sm leading-relaxed max-w-[280px] mx-auto mt-3">
                       Tente novamente com outro método de pagamento.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setStep('checkout')}
+                      className="mt-6 bg-[#0088cc] hover:bg-[#0077b5] text-white font-bold py-3 px-6 rounded-xl uppercase tracking-widest text-xs"
+                    >
+                      Voltar ao checkout
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {step === 'checkout_error' && (
+                <motion.div
+                  key="checkout_error"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="w-full max-w-[460px] space-y-6 mx-auto"
+                >
+                  <div className="bg-white border border-zinc-200 rounded-3xl p-6 sm:p-8 shadow-2xl text-center flex flex-col items-center">
+                    <h2 className="text-2xl font-semibold text-zinc-900">Erro ao abrir checkout</h2>
+                    <p className="text-zinc-600 text-sm leading-relaxed max-w-[320px] mx-auto mt-3">
+                      {checkoutErrorMessage || 'Nao foi possivel redirecionar para o gateway agora. Verifique a configuracao do checkout e tente novamente.'}
                     </p>
                     <button
                       type="button"
