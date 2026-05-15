@@ -11,7 +11,30 @@ const __dirname = path.dirname(__filename);
 async function startServer() {
   const app = express();
   const PORT = 3000;
-  const checkouts = new Map<string, { status: "pending" | "approved" | "failed"; link?: string }>();
+  type CheckoutPhase = "created" | "redirected" | "pending" | "approved" | "failed";
+  type CheckoutRecord = {
+    status: CheckoutPhase;
+    contact: string;
+    createdAt: string;
+    updatedAt: string;
+    approvedAt?: string;
+    failedAt?: string;
+    link?: string;
+    lastGatewayStatus?: string;
+  };
+  const checkouts = new Map<string, CheckoutRecord>();
+
+  const nowIso = () => new Date().toISOString();
+  const normalizePublicStatus = (status: CheckoutPhase): "pending" | "approved" | "failed" => {
+    if (status === "approved") return "approved";
+    if (status === "failed") return "failed";
+    return "pending";
+  };
+  const mapGatewayStatus = (statusRaw: string): CheckoutPhase => {
+    if (statusRaw === "approved" || statusRaw === "paid") return "approved";
+    if (statusRaw === "failed" || statusRaw === "rejected" || statusRaw === "cancelled") return "failed";
+    return "pending";
+  };
   
   const httpServer = createServer(app);
   const io = new Server(httpServer, {
@@ -40,7 +63,13 @@ async function startServer() {
     const origin = req.headers.origin || `http://localhost:${PORT}`;
     const { contact = "" } = req.body ?? {};
     const checkoutId = `chk_${Date.now()}`;
-    checkouts.set(checkoutId, { status: "pending" });
+    const createdAt = nowIso();
+    checkouts.set(checkoutId, {
+      status: "created",
+      contact: String(contact),
+      createdAt,
+      updatedAt: createdAt,
+    });
 
     const gatewayBaseUrl = process.env.GATEWAY_CHECKOUT_URL;
     if (!gatewayBaseUrl) {
@@ -54,10 +83,17 @@ async function startServer() {
     const gatewayUrl = new URL(gatewayBaseUrl);
     gatewayUrl.searchParams.set("checkout_id", checkoutId);
     gatewayUrl.searchParams.set("contact", String(contact));
-    gatewayUrl.searchParams.set("success_url", `${origin}/checkout/success?checkout_id=${checkoutId}`);
-    gatewayUrl.searchParams.set("pending_url", `${origin}/checkout/pending?checkout_id=${checkoutId}`);
-    gatewayUrl.searchParams.set("failure_url", `${origin}/checkout/failure?checkout_id=${checkoutId}`);
+    const approvedReturn = `${origin}/?payment=approved&checkout_id=${checkoutId}&link=${encodeURIComponent("https://t.me/+fake_invite_link_123")}`;
+    const pendingReturn = `${origin}/?payment=pending&checkout_id=${checkoutId}`;
+    const failedReturn = `${origin}/?payment=failed&checkout_id=${checkoutId}`;
+    gatewayUrl.searchParams.set("success_url", approvedReturn);
+    gatewayUrl.searchParams.set("pending_url", pendingReturn);
+    gatewayUrl.searchParams.set("failure_url", failedReturn);
     const redirectUrl = gatewayUrl.toString();
+    const current = checkouts.get(checkoutId);
+    if (current) {
+      checkouts.set(checkoutId, { ...current, status: "redirected", updatedAt: nowIso() });
+    }
 
     res.json({
       success: true,
@@ -73,38 +109,84 @@ async function startServer() {
       res.status(404).json({ success: false, message: "Checkout nao encontrado" });
       return;
     }
-    res.json({ success: true, checkoutId, ...checkout });
+    res.json({
+      success: true,
+      checkoutId,
+      status: normalizePublicStatus(checkout.status),
+      link: checkout.link,
+      lastGatewayStatus: checkout.lastGatewayStatus,
+      updatedAt: checkout.updatedAt,
+    });
   });
 
   // Webhook de exemplo para o gateway confirmar pagamento.
   // Ajuste o payload conforme a ParadisePags enviar.
   app.post("/api/paradisepags/webhook", (req, res) => {
-    const checkoutId = String(req.body?.checkout_id || req.body?.reference || "");
+    const checkoutId = String(req.body?.checkout_id || req.body?.reference || req.body?.external_reference || "");
     const statusRaw = String(req.body?.status || "").toLowerCase();
     if (!checkoutId || !checkouts.has(checkoutId)) {
+      console.log("[webhook] checkout not found", { checkoutId, statusRaw });
       res.status(200).json({ received: true });
       return;
     }
 
     const current = checkouts.get(checkoutId)!;
-    if (statusRaw === "approved" || statusRaw === "paid") {
-      checkouts.set(checkoutId, { status: "approved", link: "https://t.me/+fake_invite_link_123" });
-    } else if (statusRaw === "failed" || statusRaw === "rejected" || statusRaw === "cancelled") {
-      checkouts.set(checkoutId, { status: "failed" });
-    } else {
-      checkouts.set(checkoutId, { ...current, status: "pending" });
+    const mappedStatus = mapGatewayStatus(statusRaw);
+    const currentPublic = normalizePublicStatus(current.status);
+    const mappedPublic = normalizePublicStatus(mappedStatus);
+
+    // Idempotent path
+    if (current.lastGatewayStatus === statusRaw && currentPublic === mappedPublic) {
+      res.status(200).json({ received: true, idempotent: true });
+      return;
     }
+
+    // Avoid status regression after approval
+    const nextStatus =
+      current.status === "approved" && mappedStatus !== "approved" ? "approved" : mappedStatus;
+
+    const next: CheckoutRecord = {
+      ...current,
+      status: nextStatus,
+      updatedAt: nowIso(),
+      lastGatewayStatus: statusRaw,
+    };
+
+    if (nextStatus === "approved") {
+      next.approvedAt = next.approvedAt || nowIso();
+      next.link = next.link || "https://t.me/+fake_invite_link_123";
+    }
+    if (nextStatus === "failed") {
+      next.failedAt = next.failedAt || nowIso();
+    }
+    checkouts.set(checkoutId, next);
     res.status(200).json({ received: true });
   });
 
   // Redirect targets to configure in your payment gateway dashboard.
   app.get("/checkout/success", (req, res) => {
     const checkoutId = String(req.query.checkout_id || "");
+    if (!checkoutId || !checkouts.has(checkoutId)) {
+      res.redirect("/?payment=failed&reason=missing_checkout_id");
+      return;
+    }
+    const current = checkouts.get(checkoutId)!;
+    if (current.status !== "approved" && current.status !== "failed") {
+      checkouts.set(checkoutId, { ...current, status: "pending", updatedAt: nowIso() });
+    }
     res.redirect(`/?payment=pending&checkout_id=${checkoutId}`);
   });
 
   app.get("/checkout/pending", (req, res) => {
     const checkoutId = String(req.query.checkout_id || "");
+    if (!checkoutId || !checkouts.has(checkoutId)) {
+      res.redirect("/?payment=failed&reason=missing_checkout_id");
+      return;
+    }
+    const current = checkouts.get(checkoutId)!;
+    if (current.status !== "approved" && current.status !== "failed") {
+      checkouts.set(checkoutId, { ...current, status: "pending", updatedAt: nowIso() });
+    }
     res.redirect(`/?payment=pending&checkout_id=${checkoutId}`);
   });
 

@@ -10,7 +10,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export default function App() {
-  const gatewayCheckoutUrl = import.meta.env.VITE_GATEWAY_CHECKOUT_URL as string | undefined;
   const [activeUsers, setActiveUsers] = useState<number>(12);
   const [step, setStep] = useState<'checkout' | 'processing' | 'success' | 'pending' | 'failed'>('checkout');
   const [ageConfirmed, setAgeConfirmed] = useState(false);
@@ -62,7 +61,9 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
     const payment = params.get('payment');
     const link = params.get('link');
-    const checkout = params.get('checkout_id');
+    const checkoutFromQuery = params.get('checkout_id');
+    const checkoutFromStorage = window.localStorage.getItem('lastCheckoutId');
+    const checkout = checkoutFromQuery || checkoutFromStorage;
 
     if (checkout) setCheckoutId(checkout);
     if (link) setTelegramLink(link);
@@ -81,8 +82,10 @@ export default function App() {
         const data = await res.json();
         if (data.status === 'approved') {
           if (data.link) setTelegramLink(data.link);
+          window.localStorage.removeItem('lastCheckoutId');
           setStep('success');
         } else if (data.status === 'failed') {
+          window.localStorage.removeItem('lastCheckoutId');
           setStep('failed');
         }
       } catch (err) {
@@ -116,20 +119,6 @@ export default function App() {
 
     setStep('processing');
 
-    const fallbackToGateway = () => {
-      if (!gatewayCheckoutUrl) return false;
-      const gatewayUrl = new URL(gatewayCheckoutUrl);
-      gatewayUrl.searchParams.set('contact', formData.contact);
-      gatewayUrl.searchParams.set('success_url', `${window.location.origin}/checkout/success`);
-      gatewayUrl.searchParams.set('pending_url', `${window.location.origin}/checkout/pending`);
-      gatewayUrl.searchParams.set('failure_url', `${window.location.origin}/checkout/failure`);
-      window.location.assign(gatewayUrl.toString());
-      return true;
-    };
-
-    // Always prioritize the checkout URL configured by you.
-    if (fallbackToGateway()) return;
-
     try {
       const controller = new AbortController();
       const timeoutId = window.setTimeout(() => controller.abort(), 12000);
@@ -141,27 +130,19 @@ export default function App() {
       });
       window.clearTimeout(timeoutId);
       if (!res.ok) {
-        if (fallbackToGateway()) return;
         throw new Error(`Checkout request failed: ${res.status}`);
       }
       const data = await res.json().catch(() => null);
       if (data.success && data.redirectUrl) {
-        const redirectCandidate = new URL(String(data.redirectUrl), window.location.origin);
-        const isLocalPendingFallback =
-          redirectCandidate.origin === window.location.origin &&
-          redirectCandidate.pathname.startsWith('/checkout/');
-
-        if (isLocalPendingFallback) {
-          throw new Error('Backend returned local fallback instead of gateway checkout URL');
+        if (data.checkoutId) {
+          window.localStorage.setItem('lastCheckoutId', String(data.checkoutId));
         }
         window.location.assign(data.redirectUrl);
         return;
       }
-      if (fallbackToGateway()) return;
       throw new Error('Checkout response missing redirectUrl');
     } catch (err) {
       console.error(err);
-      if (fallbackToGateway()) return;
       setStep('failed');
     }
   };
